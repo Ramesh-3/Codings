@@ -1,65 +1,92 @@
-#include <stdio.h>
-#include <stdlib.h>
-  
+import java.util.*;
+class GFG{
 
-struct node {
-  int data;
-  struct node *next;
-} *head;
- 
-void initialize(){
-    head = NULL;
-}
- 
+static class Node
+{
+int key;
+Node next;
+};
 
-void insert(int num) {
-  
-    struct node* newNode = (struct node*) malloc(sizeof(struct node));
-    newNode->data  = num;
-    
-    newNode->next = head;
-   
-    head = newNode;
-    printf("Inserted Element : %d\n", num);
-}
- 
-void findloop(struct node *head) {
-    struct node *slow, *fast;
-    slow = fast = head;
-   
-    while(slow && fast && fast->next) {
-      
-        slow = slow->next;
-        fast  = fast->next->next;
-        if (slow == fast) {
-           printf("Linked List contains a loop\n");
-           return;
-        }
-    }
-    printf("No Loop in Linked List\n");
+static Node newNode(int key)
+{
+Node temp = new Node();
+temp.key = key;
+temp.next = null;
+return temp;
 }
 
-void printLinkedList(struct node *nodePtr) {
-  while (nodePtr != NULL) {
-     printf("%d", nodePtr->data);
-     nodePtr = nodePtr->next;
-     if(nodePtr != NULL)
-         printf("-->");
-  }
+// A utility function to
+// print a linked list
+static void printList(Node head)
+{
+while (head != null)
+{
+	System.out.print(head.key + " ");
+	head = head.next;
 }
-  
-int main() {
-    initialize();
-    
-    insert(8);  
-    insert(3); 
-    insert(2); 
-    insert(7);
-    insert(9);
-     
-    
-    head->next->next->next->next->next = head->next;
- 
-    findloop(head);
-    return 0;
+System.out.println();
+}
+
+// Function to detect and remove loop
+// in a linked list that may contain loop
+static Node detectAndRemoveLoop(Node head)
+{
+// If list is empty or has
+// only one node without loop
+if (head == null || head.next == null)
+	return null;
+
+Node slow = head, fast = head;
+
+// Move slow and fast 1
+// and 2 steps ahead
+// respectively.
+slow = slow.next;
+fast = fast.next.next;
+
+// Search for loop using
+// slow and fast pointers
+while (fast != null &&
+		fast.next != null)
+{
+	if (slow == fast)
+	break;
+	slow = slow.next;
+	fast = fast.next.next;
+}
+
+// If loop does not exist
+if (slow != fast)
+	return null;
+
+// If loop exists. Start slow from
+// head and fast from meeting point.
+slow = head;
+while (slow != fast)
+{
+	slow = slow.next;
+	fast = fast.next;
+}
+
+return slow;
+}
+
+// Driver code
+public static void main(String[] args)
+{
+Node head = newNode(50);
+head.next = newNode(20);
+head.next.next = newNode(15);
+head.next.next.next = newNode(4);
+head.next.next.next.next = newNode(10);
+
+// Create a loop for testing
+head.next.next.next.next.next = head.next.next;
+
+Node res = detectAndRemoveLoop(head);
+if (res == null)
+	System.out.print("Loop does not exist");
+else
+	System.out.print("Loop starting node is " + res.key);
+}
 }
